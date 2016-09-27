@@ -89,24 +89,20 @@ module Dvi
     table = Hash.new
     io.extend Util
 
-
     opcodes.each do |opcode|
-      opcode.range.each{|i|
-      table[i] = opcode }
+      opcode.range.each do |i|
+        table[i] = opcode
+      end
     end
 
     content = []
 
     begin
       while cmd = io.readbyte do
-        
         content << table[cmd].read(cmd, io)
-
-    end
-    
+      end
      rescue EOFError
      end
-
     return content
   end
 
