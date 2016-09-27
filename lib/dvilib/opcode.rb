@@ -44,6 +44,16 @@ module Dvi::Opcode
      return 0
    end
 
+   def opcode_fdnr(size)
+     size = size.abs
+     return 4 if size > 2**24
+     return 1 if size < 2**8
+     return 2 if size < 2**16
+     return 3 if size < 2**24
+     return 0
+   end
+
+
    def opcode_snr(size)
      size = size.abs
      ksize = 254
@@ -52,8 +62,6 @@ module Dvi::Opcode
    end
 
   end
-
-
 
   # SetChar is a class for set_char_0 ... set_char_127 opcodes.
   class SetChar < Base
@@ -82,12 +90,12 @@ module Dvi::Opcode
     end
 
     def to_dt
-   	return @index
+      return @index
     end 
    
     def uni
-	$currpointer += 1
-	return self
+      $currpointer += 1
+      return self
     end
     
     def to_dv(io)
@@ -131,7 +139,7 @@ module Dvi::Opcode
 
     def to_dt
         opnr = opcode_fnr(@index)
-    	return "s#{opnr} #{@index}"
+        return "s#{opnr} #{@index}"
     end 
 
     def uni
@@ -159,7 +167,7 @@ module Dvi::Opcode
     set_range 133..136
 
     def to_dt
-    	return @index.chr 
+      return @index.chr 
     end 
 
   end
@@ -197,7 +205,7 @@ module Dvi::Opcode
     def to_dt
       return "sr #{@height} #{@width}"
     end
-	 
+ 
     def uni
       $currpointer += 1 + 4 + 4
       return self
@@ -358,10 +366,10 @@ module Dvi::Opcode
     end
 
     def uni
-	$stacklevel += 1	
-	$stackdepth = $stacklevel if $stackdepth < $stacklevel
-	$currpointer += 1
-	return self
+      $stacklevel += 1	
+      $stackdepth = $stacklevel if $stackdepth < $stacklevel
+      $currpointer += 1
+      return self
     end 
 
     def to_dv(io)
@@ -387,8 +395,8 @@ module Dvi::Opcode
 
     def uni
         $stacklevel -= 1
-	$currpointer += 1
-	return self
+        $currpointer += 1
+        return self
     end
     
     def to_dv(io)
@@ -416,11 +424,11 @@ module Dvi::Opcode
 
       def to_dv(io)
       opcode = case send('class').to_s
-      	     when 'Dvi::Opcode::W0'; 147
-      	     when 'Dvi::Opcode::X0'; 152
-      	     when 'Dvi::Opcode::Y0'; 161
-      	     when 'Dvi::Opcode::Z0'; 166
-      	     end
+               when 'Dvi::Opcode::W0'; 147
+               when 'Dvi::Opcode::X0'; 152
+               when 'Dvi::Opcode::Y0'; 161
+               when 'Dvi::Opcode::Z0'; 166
+               end
       io.write_uint1(opcode)
       return 1 
       
@@ -449,13 +457,13 @@ module Dvi::Opcode
 
       def to_dv(io)
       opcode = case send('class').to_s
-      	     when 'Dvi::Opcode::Right'; 142
-      	     when 'Dvi::Opcode::W'; 147
-      	     when 'Dvi::Opcode::X'; 152
-      	     when 'Dvi::Opcode::Down'; 156
-      	     when 'Dvi::Opcode::Y'; 161
-      	     when 'Dvi::Opcode::Z'; 166
-      	     end
+               when 'Dvi::Opcode::Right'; 142
+               when 'Dvi::Opcode::W'; 147
+               when 'Dvi::Opcode::X'; 152
+               when 'Dvi::Opcode::Down'; 156
+               when 'Dvi::Opcode::Y'; 161
+               when 'Dvi::Opcode::Z'; 166
+               end
       base = opcode_mnr(@size)
       opcode += base
       io.write_uint1(opcode)
@@ -490,7 +498,7 @@ module Dvi::Opcode
     end
 
     def to_dt
-    	return 'w0'
+      return 'w0'
     end
   end
 
@@ -644,8 +652,8 @@ module Dvi::Opcode
     end
 
     def uni
-	$currpointer += 1
-	return self
+      $currpointer += 1
+      return self
     end 
 
     def to_dv(io)
@@ -687,13 +695,13 @@ module Dvi::Opcode
   
     def uni
         base = opcode_snr(@index)
-	$currpointer += 1 + base
-	return self
+        $currpointer += 1 + base
+        return self
     end
 
     def to_dv(io)
       opcode = 234
-      base = opcode_snr(@index)
+      base = opcode_fdnr(@index)
       opcode += base
       io.write_uint1(opcode)
       io.__send__("write_uint" + base.to_s, @index)
@@ -731,8 +739,8 @@ module Dvi::Opcode
     def uni
         base = opcode_snr(@size)
         @size = @content.size
-	$currpointer += 1 + base + @size
-	return self
+        $currpointer += 1 + base + @size
+        return self
     end 
 
     def to_dv(io)
@@ -751,7 +759,7 @@ module Dvi::Opcode
   class FntDef < Base
     set_range 243..246
     attr_reader :num, :checksum, :scale, :design_size, :area, :fontname
-    attr_writer :num
+    attr_writer :num, :checksum, :scale, :design_size, :area, :fontname
 
     def initialize(num, checksum, scale, design_size, area, fontname)
       @num = num
@@ -789,25 +797,26 @@ module Dvi::Opcode
     end
 
     def uni
-	base = opcode_fnr(@num)     
-	$currpointer += 1 + base + 4 + 4 + 4 + 1 + 1 + @area.size + @fontname.size 
-	return self
+      base = opcode_fnr(@num)     
+      $currpointer += 1 + base + 4 + 4 + 4 + 1 + 1 + @area.size + @fontname.size 
+      return self
     end 
 
     def to_dv(io)
-    opcode = 242
-    base = opcode_fnr(num)     
-    opcode += base
-    io.write_uint1(opcode)
-    io.__send__("write_uint" + base.to_s, num)
-    io.write_uint4(checksum)
-    io.write_uint4(@scale)
-    io.write_uint4(@design_size)
-    io.write_uint1(@area.size)
-    io.print @area
-    io.write_uint1(@fontname.size)    
-    io.print @fontname
-    return 1 + base + 4 + 4 + 4 + 1 + 1 + @area.size + @fontname.size 
+      opcode = 242
+      base = opcode_fdnr(@num)
+      opcode += base
+      io.write_uint1(opcode)
+      #num = if n < 4 then io.__send__("read_uint" + n.to_s) else io.read_int4 end
+      io.__send__("write_uint" + base.to_s, @num)
+      io.write_uint4(@checksum)
+      io.write_uint4(@scale)
+      io.write_uint4(@design_size)
+      io.write_uint1(@area.size)
+      io.print @area
+      io.write_uint1(@fontname.size)    
+      io.print @fontname
+      return 1 + base + 4 + 4 + 4 + 1 + 1 + @area.size + @fontname.size 
     end
   end
 
