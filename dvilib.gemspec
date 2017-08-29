@@ -1,10 +1,10 @@
 Gem::Specification.new do |s|
   s.name = %q{dvilib}
-  s.version = "0.0.1a"
+  s.version = "0.0.1b"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["D. Galcius"]
-  s.date = %q{2015-10-23}
+  s.date = %q{2017-03-28}
   s.email = %q{deimi@vtex.lt}
   s.files = ["./lib/dvilib.rb", "./lib/dvilib/layer.rb", "./lib/dvilib/lsr.rb", "./lib/dvilib/opcode.rb", "./lib/dvilib/tfm.rb", "./lib/dvilib/util.rb", "./lib/dvilib/version.rb", "./lib/dvilib/tfm/format.rb"]
   s.homepage = %q{}
