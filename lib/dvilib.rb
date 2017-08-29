@@ -47,7 +47,7 @@ module Dvi
   end
 
   class Font
-    attr_reader :checksum, :scale, :design_size, :area, :name, :tfm
+    attr_accessor :checksum, :scale, :design_size, :area, :name, :tfm
     def initialize(checksum, scale, design_size, area, name, tfm)
       @checksum = checksum # check sum should be same as in tfm file
       @scale = scale # scale factor
@@ -60,7 +60,7 @@ module Dvi
 
   # TypesetCharacter is a class of typeset characters.
   class TypesetCharacter
-    attr_reader :index, :font, :h , :v, :width
+    attr_accessor :index, :font, :h , :v, :width
     def initialize(index, h, v, font)
       @font = font
       @h = h
@@ -135,7 +135,7 @@ module Dvi
        else 
          s = index.chr.to_s
          text << '\\' if index == 40 || index == 41 
-	 text << '\\' if index == 92
+         text << '\\' if index == 92
          text << s 
        end              
      else   
@@ -145,13 +145,11 @@ module Dvi
          dtcontents << "(" +  text + ")"
          text = ""
         end
-
       temp = optclass.to_dt
-      if optclass.class.to_s == "Dvi::Opcode::XXX"       
+      if optclass.class.to_s == "Dvi::Opcode::XXX"
         temp.gsub!(/\\/){'\\\\'}
       end 
       dtcontents << temp 
-
      end
      }
      return dtcontents
@@ -338,7 +336,7 @@ module Dvi
   begin 
   op = icontent[i]
   if op.class == Dvi::Opcode::XXX 
- 	puts op.inspect 
+    puts op.inspect 
     layer = Dvi::Layer.read(op.content,layers)
 #	puts layer.inspect 
       if !layer.nil?
@@ -347,10 +345,9 @@ module Dvi
       l << op
         puts layer.inspect
         puts layer.name
-	puts layer.type
-	puts layer.etag
+        puts layer.type
+        puts layer.etag
       end 
-
 #     puts op.inspect + "is layer"
 #     layertype = Dvi::Layer.type(op.content, layers)
 #     layeretag = Dvi::Layer.etag(op.content, layers)
