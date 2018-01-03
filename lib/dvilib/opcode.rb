@@ -67,6 +67,7 @@ module Dvi::Opcode
   class SetChar < Base
     set_range 0..127
     attr_reader :index
+    attr_writer :index
 
     # index:: character index
     def initialize(index)
