@@ -7,4 +7,7 @@ gem: dvilib.gemspec
 #	sudo gem install $<
 
 install: dvilib-0.0.1b.gem
-	sudo gem install $<
+	gem install $<
+
+clean:
+	rm -f dvilib-0.0.1b.gem
